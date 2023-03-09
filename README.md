@@ -4,7 +4,8 @@
 
 # Change Inserter Drop Lane
 
-Allows you to change which lane inserters drop on.
+Allows you to change which belt lane inserters drop onto. A standalone version
+of the [Krastorio 2](https://mods.factorio.com/mod/Krastorio2) feature.
 
 ## Installation
 
