@@ -1,3 +1,11 @@
+do
+  -- Don't load if sim scenario has already loaded this (in another lua state)
+  local modloader = remote.interfaces["modloader"]
+  if modloader and modloader[script.mod_name] then
+    return
+  end
+end
+
 local flib_gui = require("__flib__/gui-lite")
 local flib_math = require("__flib__/math")
 
@@ -9,6 +17,16 @@ local inserter_drop_vectors = {
 --- @param entity LuaEntity
 local function is_compatible(entity)
   return entity.prototype.allow_custom_vectors and not string.find(entity.name, "%-?miniloader%-inserter")
+end
+
+--- @param entity LuaEntity
+local function get_is_far(entity)
+  local drop_pos_vector = {
+    x = entity.drop_position.x - entity.position.x,
+    y = entity.drop_position.y - entity.position.y,
+  }
+  local vector_length = flib_math.sqrt(drop_pos_vector.x * drop_pos_vector.x + drop_pos_vector.y * drop_pos_vector.y)
+  return vector_length % 1 < 0.5, drop_pos_vector
 end
 
 --- @param entity LuaEntity
@@ -37,16 +55,6 @@ local function change_mode_fx(entity, is_far)
     vertical_speed = 0.015,
     frame_speed = 1,
   })
-end
-
---- @param entity LuaEntity
-local function get_is_far(entity)
-  local drop_pos_vector = {
-    x = entity.drop_position.x - entity.position.x,
-    y = entity.drop_position.y - entity.position.y,
-  }
-  local vector_length = flib_math.sqrt(drop_pos_vector.x * drop_pos_vector.x + drop_pos_vector.y * drop_pos_vector.y)
-  return vector_length % 1 < 0.5, drop_pos_vector
 end
 
 --- @param player LuaPlayer
@@ -177,13 +185,21 @@ local function on_gui_opened(e)
   create_gui(player, entity)
 end
 
---- @param e EventData.on_gui_closed
-local function on_gui_closed(e) end
-
 flib_gui.add_handlers({ on_droplane_switch_state_changed = on_droplane_switch_state_changed })
 flib_gui.handle_events()
 
 script.on_event("cidl-change-lane", on_change_lane)
-script.on_event(defines.events.on_gui_closed, on_gui_closed)
 script.on_event(defines.events.on_gui_opened, on_gui_opened)
 script.on_event(defines.events.on_pre_entity_settings_pasted, on_pre_entity_settings_pasted)
+
+-- For simulations
+remote.add_interface("ChangeInserterDropLane_simulation", {
+  --- @param player LuaPlayer
+  change_selected_lane = function(player)
+    local selected = player.selected
+    if not selected then
+      return
+    end
+    change_lane(player, selected)
+  end,
+})
