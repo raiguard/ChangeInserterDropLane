@@ -58,8 +58,16 @@ data:extend({
     },
   },
   {
+    type = "sprite",
+    name = "cidl_change_lane_icon",
+    filename = "__ChangeInserterDropLane__/graphics/change-lane-icon.png",
+    size = 64,
+    flags = { "gui-icon" },
+  },
+  {
     type = "tips-and-tricks-item",
     name = "cidl-change-drop-lane",
+    tag = "[img=cidl_change_lane_icon]",
     category = "inserters",
     indent = 1,
     order = "g",
