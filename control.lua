@@ -225,6 +225,7 @@ flib_gui.add_handlers({ on_droplane_switch_state_changed = on_droplane_switch_st
 flib_gui.handle_events()
 
 script.on_init(on_init)
+script.on_configuration_changed(on_init)
 script.on_event("cidl-change-lane", on_change_lane)
 script.on_event(defines.events.on_gui_opened, on_gui_opened)
 script.on_event(defines.events.on_pre_entity_settings_pasted, on_pre_entity_settings_pasted)
