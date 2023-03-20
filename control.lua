@@ -8,6 +8,7 @@ end
 
 local flib_gui = require("__flib__/gui-lite")
 local flib_math = require("__flib__/math")
+local flib_position = require("__flib__/position")
 
 local inserter_drop_vectors = {
   [true] = { [0] = { 0.01, -0.2 }, [2] = { 0.2, 0.01 }, [4] = { -0.01, 0.2 }, [6] = { -0.2, -0.01 } }, -- Near lane
@@ -21,10 +22,7 @@ end
 
 --- @param entity LuaEntity
 local function get_is_far(entity)
-  local drop_pos_vector = {
-    x = entity.drop_position.x - entity.position.x,
-    y = entity.drop_position.y - entity.position.y,
-  }
+  local drop_pos_vector = flib_position.sub(entity.drop_position, entity.position)
   local vector_length = flib_math.sqrt(drop_pos_vector.x * drop_pos_vector.x + drop_pos_vector.y * drop_pos_vector.y)
   return vector_length % 1 < 0.5, drop_pos_vector
 end
@@ -159,13 +157,42 @@ local function on_pre_entity_settings_pasted(e)
   if not destination.prototype.allow_custom_vectors then
     return
   end
+  global.temp_inserter_settings[destination.unit_number] = {
+    drop_position = destination.drop_position,
+    pickup_position = destination.pickup_position,
+  }
+end
+
+--- @param e EventData.on_entity_settings_pasted
+local function on_entity_settings_pasted(e)
+  local source, destination = e.source, e.destination
+  if not source.valid or not destination.valid then
+    return
+  end
+  if source.type ~= "inserter" or destination.type ~= "inserter" then
+    return
+  end
+  if not destination.prototype.allow_custom_vectors then
+    return
+  end
+
+  local destination_unit_number = destination.unit_number --[[@as uint]]
+  local temp_settings = global.temp_inserter_settings[destination_unit_number]
+  if not temp_settings then
+    return
+  end
+  global.temp_inserter_settings[destination_unit_number] = nil
+
+  destination.drop_position = temp_settings.drop_position
+  destination.pickup_position = temp_settings.pickup_position
+
   local player = game.get_player(e.player_index)
   if not player then
     return
   end
   local destination_is_far = get_is_far(destination)
   if destination_is_far ~= get_is_far(source) then
-    change_mode_fx(destination, not destination_is_far)
+    change_lane(player, destination)
   end
 end
 
@@ -185,12 +212,23 @@ local function on_gui_opened(e)
   create_gui(player, entity)
 end
 
+--- @class InserterSettings
+--- @field drop_position MapPosition
+--- @field pickup_position MapPosition
+
+local function on_init()
+  --- @type table<uint, InserterSettings?>
+  global.temp_inserter_settings = {}
+end
+
 flib_gui.add_handlers({ on_droplane_switch_state_changed = on_droplane_switch_state_changed })
 flib_gui.handle_events()
 
+script.on_init(on_init)
 script.on_event("cidl-change-lane", on_change_lane)
 script.on_event(defines.events.on_gui_opened, on_gui_opened)
 script.on_event(defines.events.on_pre_entity_settings_pasted, on_pre_entity_settings_pasted)
+script.on_event(defines.events.on_entity_settings_pasted, on_entity_settings_pasted)
 
 -- For simulations
 remote.add_interface("ChangeInserterDropLane_simulation", {
