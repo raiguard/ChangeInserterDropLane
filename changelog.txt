@@ -3,6 +3,7 @@ Version: 1.0.1
 Date: ????
   Bugfixes:
     - Fixed being able to turn standard inserters into long inserters and vice versa by copy/pasting (#3)
+    - Marked Krastorio 2 and Bob's Adjustable Inserters as incompatible
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.0
 Date: 2023-03-08
