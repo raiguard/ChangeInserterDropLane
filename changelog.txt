@@ -1,7 +1,9 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.3
 Date: ????
-  Features:
+  Changes:
+    - Removed bob's inserters incompatibility - the mod will simply do nothing if bob's inserters is enabled
+    - Removed K2 incompatibility in preparation for K2.0
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.2
 Date: 2023-03-19

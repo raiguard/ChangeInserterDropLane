@@ -1,3 +1,7 @@
+if mods["bobinserters"] then
+  return
+end
+
 data:extend({
   { type = "custom-input", name = "cidl-change-lane", key_sequence = "SHIFT + L" },
   {

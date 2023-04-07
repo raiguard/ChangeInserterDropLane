@@ -1,3 +1,7 @@
+if mods["bobinserters"] then
+  return
+end
+
 for _, inserter in pairs(data.raw["inserter"]) do
   if inserter.cidl_ignore then
     inserter.cidl_ignore = nil

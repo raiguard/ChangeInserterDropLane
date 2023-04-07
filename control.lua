@@ -1,3 +1,7 @@
+if script.active_mods["bobinserters"] then
+  return
+end
+
 do
   -- Don't load if sim scenario has already loaded this (in another lua state)
   local modloader = remote.interfaces["modloader"]
