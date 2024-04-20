@@ -2,9 +2,9 @@ if script.active_mods["bobinserters"] then
   return
 end
 
-local flib_gui = require("__flib__/gui-lite")
-local flib_math = require("__flib__/math")
-local flib_position = require("__flib__/position")
+local flib_gui = require("__flib__.gui-lite")
+local flib_math = require("__flib__.math")
+local flib_position = require("__flib__.position")
 
 local inserter_drop_vectors = {
   [true] = { [0] = { 0.01, -0.2 }, [2] = { 0.2, 0.01 }, [4] = { -0.01, 0.2 }, [6] = { -0.2, -0.01 } }, -- Near lane
