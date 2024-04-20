@@ -2,14 +2,6 @@ if script.active_mods["bobinserters"] then
   return
 end
 
-do
-  -- Don't load if sim scenario has already loaded this (in another lua state)
-  local modloader = remote.interfaces["modloader"]
-  if modloader and modloader[script.mod_name] then
-    return
-  end
-end
-
 local flib_gui = require("__flib__/gui-lite")
 local flib_math = require("__flib__/math")
 local flib_position = require("__flib__/position")

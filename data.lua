@@ -79,6 +79,7 @@ data:extend({
     dependencies = { "inserters" },
     simulation = {
       save = "__ChangeInserterDropLane__/simulations/change-drop-lane.zip",
+      mods = { "ChangeInserterDropLane" },
       init = [[
         player = game.create_test_player({ name = "fufucuddlypoops" })
         player.teleport({ -7, 2 })
