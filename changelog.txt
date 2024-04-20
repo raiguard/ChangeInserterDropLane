@@ -2,7 +2,9 @@
 Version: 1.0.3
 Date: ????
   Changes:
+    - Updated to Factorio 1.1.107.
     - Removed bob's inserters incompatibility - the mod will simply do nothing if bob's inserters is enabled.
+    - Removed dependency on simhelper.
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.2
 Date: 2023-03-19
