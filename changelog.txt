@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.3
-Date: ????
+Date: 2024-04-20
   Changes:
     - Updated to Factorio 1.1.107.
     - Removed bob's inserters incompatibility - the mod will simply do nothing if bob's inserters is enabled.
