@@ -1,7 +1,9 @@
 ---------------------------------------------------------------------------------------------------
-Version: 1.0.4
+Version: 1.1.0
 Date: ????
   Changes:
+    - Updated to Factorio 2.0.
+    - Removed Krastorio 2 incompatibility - K2 will depend on this mod going forward.
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.3
 Date: 2024-04-20

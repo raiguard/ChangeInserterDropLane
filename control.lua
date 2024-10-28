@@ -2,13 +2,21 @@ if script.active_mods["bobinserters"] then
   return
 end
 
-local flib_gui = require("__flib__.gui-lite")
+local flib_gui = require("__flib__.gui")
 local flib_math = require("__flib__.math")
 local flib_position = require("__flib__.position")
 
-local inserter_drop_vectors = {
-  [true] = { [0] = { 0.01, -0.2 }, [2] = { 0.2, 0.01 }, [4] = { -0.01, 0.2 }, [6] = { -0.2, -0.01 } }, -- Near lane
-  [false] = { [0] = { 0.0, 0.2 }, [2] = { -0.2, 0.0 }, [4] = { 0.0, -0.2 }, [6] = { 0.2, 0.0 } }, -- Far lane
+local near_vectors = {
+  [defines.direction.north] = { 0.01, -0.2 },
+  [defines.direction.east] = { 0.2, 0.01 },
+  [defines.direction.south] = { -0.01, 0.2 },
+  [defines.direction.west] = { -0.2, -0.01 },
+}
+local far_vectors = {
+  [defines.direction.north] = { 0.0, 0.2 },
+  [defines.direction.east] = { -0.2, 0.0 },
+  [defines.direction.south] = { 0.0, -0.2 },
+  [defines.direction.west] = { 0.2, 0.0 },
 }
 
 --- @param entity LuaEntity
@@ -26,14 +34,15 @@ end
 --- @param entity LuaEntity
 --- @param is_far boolean
 local function change_mode_fx(entity, is_far)
-  -- Flying text
-  entity.surface.create_entity({
-    type = "flying-text",
-    name = "flying-text",
-    position = entity.position,
-    text = is_far and { "message.cidl-drop-far" } or { "message.cidl-drop-near" },
-    color = { r = 1, g = 0.5, b = 0.25 },
-  })
+  for _, player in pairs(game.players) do
+    if player.surface == entity.surface then
+      player.create_local_flying_text({
+        text = is_far and { "message.cidl-drop-far" } or { "message.cidl-drop-near" },
+        color = { r = 1, g = 0.5, b = 0.25 },
+        position = entity.position,
+      })
+    end
+  end
   -- Welding sound
   game.play_sound({
     path = "cidl-welding",
@@ -65,10 +74,11 @@ local function change_lane(player, entity)
 
   -- Change lane
   local is_far, drop_pos_vector = get_is_far(entity)
-  local dpf = inserter_drop_vectors[is_far][entity.direction]
+  local vectors = is_far and near_vectors or far_vectors
+  local vector = vectors[entity.direction]
   entity.drop_position = {
-    entity.position.x + flib_math.round(drop_pos_vector.x) + dpf[1],
-    entity.position.y + flib_math.round(drop_pos_vector.y) + dpf[2],
+    entity.position.x + flib_math.round(drop_pos_vector.x) + vector[1],
+    entity.position.y + flib_math.round(drop_pos_vector.y) + vector[2],
   }
 
   -- Special effects
@@ -153,7 +163,7 @@ local function on_pre_entity_settings_pasted(e)
   if not destination.prototype.allow_custom_vectors then
     return
   end
-  global.temp_inserter_settings[destination.unit_number] = {
+  storage.temp_inserter_settings[destination.unit_number] = {
     drop_position = destination.drop_position,
     pickup_position = destination.pickup_position,
   }
@@ -173,11 +183,11 @@ local function on_entity_settings_pasted(e)
   end
 
   local destination_unit_number = destination.unit_number --[[@as uint]]
-  local temp_settings = global.temp_inserter_settings[destination_unit_number]
+  local temp_settings = storage.temp_inserter_settings[destination_unit_number]
   if not temp_settings then
     return
   end
-  global.temp_inserter_settings[destination_unit_number] = nil
+  storage.temp_inserter_settings[destination_unit_number] = nil
 
   destination.drop_position = temp_settings.drop_position
   destination.pickup_position = temp_settings.pickup_position
@@ -214,7 +224,7 @@ end
 
 local function on_init()
   --- @type table<uint, InserterSettings?>
-  global.temp_inserter_settings = {}
+  storage.temp_inserter_settings = {}
 end
 
 flib_gui.add_handlers({ on_droplane_switch_state_changed = on_droplane_switch_state_changed })
