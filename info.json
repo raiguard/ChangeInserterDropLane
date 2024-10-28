@@ -1,6 +1,6 @@
 {
   "name": "ChangeInserterDropLane",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "title": "Change Inserter Drop Lane",
   "description": "Change which side of the belt an inserter will drop on.",
   "author": "raiguard, Krastor, Linver",
