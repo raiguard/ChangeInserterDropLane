@@ -11,5 +11,9 @@
   "package": {
     "git_publish_branch": "main",
     "ignore": [ ".github", ".kakrc", ".vscode", ".xcf", "stylua.toml" ]
+    "scripts": {
+      "prepublish": "factorio-crowdin-sync"
+    },
+    "sync_portal_details": true
   }
 }
