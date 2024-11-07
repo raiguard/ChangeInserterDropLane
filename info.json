@@ -10,7 +10,7 @@
   "dependencies": [ "base >= 2.0.0", "flib >= 0.15.0" ],
   "package": {
     "git_publish_branch": "main",
-    "ignore": [ ".github", ".kakrc", ".vscode", ".xcf", "stylua.toml" ]
+    "ignore": [ ".github", ".kakrc", ".vscode", ".xcf", "stylua.toml" ],
     "scripts": {
       "prepublish": "factorio-crowdin-sync"
     },
