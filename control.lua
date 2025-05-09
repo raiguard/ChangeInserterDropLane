@@ -19,6 +19,7 @@ local far_vectors = {
   [defines.direction.west] = { 0.2, 0.0 },
 }
 
+--- @param entity LuaEntity
 local function get_prototype(entity)
   return entity.type == "entity-ghost" and entity.ghost_prototype or entity.prototype
 end
