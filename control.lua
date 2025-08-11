@@ -20,8 +20,14 @@ local far_vectors = {
 }
 
 --- @param entity LuaEntity
+local function get_prototype(entity)
+  return entity.type == "entity-ghost" and entity.ghost_prototype or entity.prototype
+end
+
+--- @param entity LuaEntity
 local function is_compatible(entity)
-  return entity.prototype.allow_custom_vectors and not string.find(entity.name, "%-?miniloader%-inserter")
+  local prototype = get_prototype(entity)
+  return prototype.allow_custom_vectors and not string.find(prototype.name, "%-?miniloader%-inserter")
 end
 
 --- @param entity LuaEntity
@@ -63,7 +69,7 @@ end
 --- @param player LuaPlayer
 --- @param entity LuaEntity
 local function change_lane(player, entity)
-  if not entity.prototype.allow_custom_vectors then
+  if not get_prototype(entity).allow_custom_vectors then
     player.create_local_flying_text({
       text = { "message.cidl-cannot-change-drop-lane" },
       create_at_cursor = true,
@@ -160,7 +166,7 @@ local function on_pre_entity_settings_pasted(e)
   if source.type ~= "inserter" or destination.type ~= "inserter" then
     return
   end
-  if not destination.prototype.allow_custom_vectors then
+  if not get_prototype(destination).allow_custom_vectors then
     return
   end
   storage.temp_inserter_settings[destination.unit_number] = {
@@ -178,7 +184,7 @@ local function on_entity_settings_pasted(e)
   if source.type ~= "inserter" or destination.type ~= "inserter" then
     return
   end
-  if not destination.prototype.allow_custom_vectors then
+  if not get_prototype(destination).allow_custom_vectors then
     return
   end
 
